@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Casimir — demo menswear store where every product is a real 360° spin-photography set.">
+<style>html{color-scheme:dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Casimir Menswear</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Jost:wght@300;400;500&display=swap">
+<style>
+/* Layout: quiet dark store. Real 360° spin photography on every product tile, generous whitespace, serif headlines, one gold accent used sparingly. Single dark theme by choice. */
+:root{
+  --bg:#0c0b0a; --bg2:#121110; --surface:#181614; --line:rgba(236,228,214,.12);
+  --fg:#ece4d6; --muted:#958c7e; --gold:#c9a35c; --gold-hi:#e6cd92;
+  --display:"Bodoni Moda","Didot","Times New Roman",serif;
+  --body:"Jost","Helvetica Neue",Arial,sans-serif;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-weight:300;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+img{max-width:100%;display:block}
+::selection{background:var(--gold);color:#120e08}
+.wrap{padding-inline:clamp(16px,4vw,56px)}
+
+/* nav */
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px clamp(16px,4vw,56px);background:rgba(12,11,10,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid transparent;transition:border-color .4s}
+nav.solid{border-color:var(--line)}
+.logo{font-family:var(--display);font-size:24px;letter-spacing:.2em;font-weight:500}
+.logo span{color:var(--gold);font-style:italic;font-weight:400}
+nav ul{display:flex;gap:32px;list-style:none;margin:0;padding:0}
+nav li a{font-size:12px;letter-spacing:.26em;text-transform:uppercase;position:relative;padding-bottom:4px}
+nav li a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;background:var(--gold);transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ease)}
+nav li a:hover::after{transform:scaleX(1);transform-origin:left}
+.bag{font-size:12px;letter-spacing:.26em;text-transform:uppercase;border:1px solid var(--line);padding:9px 16px;border-radius:999px;transition:border-color .3s,color .3s}
+.bag:hover{border-color:var(--gold);color:var(--gold-hi)}
+@media (max-width:760px){nav ul{display:none}}
+
+/* hero */
+.hero{position:relative;overflow:hidden;min-height:78svh;display:grid;align-items:end;background:var(--bg2)}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;opacity:0;transform:scale(1.08);transition:opacity 1.4s ease,transform 2.4s var(--ease)}
+body.ready .hero img{opacity:.78;transform:scale(1)}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,11,10,.1) 0%,rgba(12,11,10,.15) 45%,rgba(12,11,10,.92) 100%)}
+.hero-copy{position:relative;z-index:2;padding:clamp(120px,20vh,200px) clamp(16px,4vw,56px) clamp(40px,6vw,72px);display:grid;grid-template-columns:1fr auto;gap:28px;align-items:end}
+.eyebrow{font-size:11px;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:14px}
+.eyebrow::before{content:"";width:36px;height:1px;background:var(--gold)}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(48px,8.5vw,124px);line-height:.95;margin:18px 0 0;letter-spacing:-.02em;text-wrap:balance;max-width:11ch}
+h1 em{font-style:italic;color:var(--gold-hi)}
+.hero-copy p{max-width:40ch;margin:0;color:var(--fg);opacity:.85;font-size:15px}
+.hero .side{display:grid;gap:18px;justify-items:end;text-align:right}
+@media (max-width:760px){.hero-copy{grid-template-columns:1fr}.hero .side{justify-items:start;text-align:left}}
+
+.btn{position:relative;display:inline-flex;align-items:center;gap:12px;padding:15px 28px;border-radius:999px;border:1px solid var(--gold);color:var(--gold-hi);font-size:12px;letter-spacing:.28em;text-transform:uppercase;overflow:hidden;isolation:isolate;transition:color .4s}
+.btn::before{content:"";position:absolute;inset:0;background:var(--gold);transform:translateY(101%);transition:transform .5s var(--ease);z-index:-1;border-radius:inherit}
+.btn:hover{color:#15100a}.btn:hover::before{transform:none}
+.btn svg{width:15px;height:15px;transition:transform .4s}.btn:hover svg{transform:translateX(4px)}
+
+/* reveal: visible at rest, animates in once seen */
+.rv{transition:opacity .9s ease,transform 1s var(--ease)}
+body.ready .rv:not(.in){opacity:0;transform:translateY(24px)}
+.rv.in{opacity:1;transform:none}
+
+section{padding-block:clamp(64px,9vw,120px)}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:clamp(32px,4vw,56px)}
+h2{font-family:var(--display);font-weight:400;font-size:clamp(36px,5.5vw,76px);line-height:.98;margin:12px 0 0;letter-spacing:-.015em;text-wrap:balance}
+h2 em{color:var(--gold-hi)}
+.sec-head p{max-width:44ch;color:var(--muted);margin:0;font-size:15px}
+
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.filters button{font-size:11px;letter-spacing:.24em;text-transform:uppercase;padding:9px 16px;border:1px solid var(--line);border-radius:999px;color:var(--muted);transition:.3s}
+.filters button:hover{color:var(--fg);border-color:rgba(236,228,214,.3)}
+.filters button.on{color:#15100a;background:var(--gold-hi);border-color:var(--gold-hi)}
+
+/* ---- 360° spin viewer ---- */
+.spin{position:relative;aspect-ratio:4/5;overflow:hidden;background:var(--spin-bg,#fff);touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+.spin.grabbing{cursor:grabbing}
+.spin .fr{position:absolute;inset:0;background-repeat:no-repeat;background-size:cover;background-position:0 0;will-change:opacity,background-position}
+.spin .fr.sheet{background-size:var(--cols) var(--rows)}
+.spin .fr.b{opacity:0}
+.spin .hud{position:absolute;left:14px;right:14px;bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;pointer-events:none;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:rgba(0,0,0,.55);font-variant-numeric:tabular-nums}
+.spin.dark .hud{color:rgba(255,255,255,.6)}
+.spin .hud .deg{display:flex;align-items:center;gap:8px}
+.spin .hud .deg svg{width:13px;height:13px}
+.spin .hud .deg b{font-weight:400;min-width:3.2em;text-align:right}
+.spin .bar{position:absolute;left:0;bottom:0;height:2px;width:var(--p,0%);background:var(--gold);transition:width .1s linear;pointer-events:none}
+.spin .load{position:absolute;inset:0;display:grid;place-items:center;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(0,0,0,.45);background:rgba(255,255,255,.4);backdrop-filter:blur(2px);transition:opacity .5s;pointer-events:none}
+.spin.dark .load{color:rgba(255,255,255,.5);background:rgba(0,0,0,.35)}
+.spin.loaded .load{opacity:0}
+.spin .tag{position:absolute;top:14px;left:14px;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#15100a;background:var(--gold-hi);padding:6px 10px;border-radius:999px;pointer-events:none}
+.spin .b360{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(0,0,0,.25);display:grid;place-items:center;font-size:9px;letter-spacing:.08em;color:rgba(0,0,0,.6);pointer-events:none;font-weight:500}
+.spin.dark .b360{border-color:rgba(255,255,255,.35);color:rgba(255,255,255,.7)}
+
+/* product grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:clamp(18px,2.4vw,32px) clamp(12px,1.6vw,22px)}
+.card{min-width:0;display:grid;gap:14px}
+.card.hide{display:none}
+.card .ph{position:relative}
+.card .quick{position:absolute;left:14px;right:14px;bottom:34px;display:flex;justify-content:center;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--fg);background:rgba(12,11,10,.8);backdrop-filter:blur(8px);border:1px solid var(--line);padding:13px;border-radius:999px;transform:translateY(12px);opacity:0;transition:.5s var(--ease)}
+.card:hover .quick,.card .quick:focus-visible{transform:none;opacity:1}
+.card .quick:hover{background:var(--gold-hi);color:#15100a;border-color:var(--gold-hi)}
+.card .meta{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.card .name{font-family:var(--display);font-size:20px;line-height:1.15;margin:0;font-weight:400}
+.card .fab{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.card .price{font-variant-numeric:tabular-nums;font-size:14px;letter-spacing:.08em;color:var(--gold-hi);white-space:nowrap}
+.card .sizes{display:flex;gap:6px}
+.card .sizes span{font-size:10px;letter-spacing:.1em;color:var(--muted);border:1px solid var(--line);padding:3px 7px;border-radius:4px}
+@media (hover:none){.card .quick{transform:none;opacity:1}}
+
+/* feature */
+.feature{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(24px,5vw,80px);align-items:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding-block:clamp(48px,7vw,100px)}
+.feature .copy p{color:var(--muted);max-width:50ch;font-size:16px}
+.feature .quote{font-family:var(--display);font-size:clamp(24px,2.4vw,34px);font-style:italic;line-height:1.3;color:var(--fg);max-width:26ch;margin:22px 0}
+.specs{display:grid;grid-template-columns:1fr 1fr;gap:18px 28px;margin-top:28px;border-top:1px solid var(--line);padding-top:24px}
+.specs dt{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
+.specs dd{margin:4px 0 0;font-size:14px}
+.colour{display:flex;gap:10px;margin-top:10px}
+.colour button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);transition:transform .3s}
+.colour button.on{box-shadow:0 0 0 3px var(--bg),0 0 0 4px var(--gold);transform:scale(1.1)}
+@media (max-width:860px){.feature{grid-template-columns:1fr}}
+
+/* lookbook */
+.look{display:grid;grid-template-columns:minmax(0,440px) 1fr;gap:clamp(24px,5vw,80px);align-items:center}
+.look .copy p{color:var(--muted);max-width:46ch;font-size:16px}
+.look .steps{display:grid;gap:16px;margin-top:28px;border-top:1px solid var(--line);padding-top:24px}
+.look .steps div{display:grid;grid-template-columns:auto 1fr;gap:14px;font-size:14px}
+.look .steps b{font-family:var(--display);font-weight:400;color:var(--gold-hi);font-size:18px;line-height:1.3}
+@media (max-width:860px){.look{grid-template-columns:1fr}}
+
+/* newsletter */
+.cta{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.cta form{display:flex;border-bottom:1px solid var(--gold);max-width:460px;width:100%}
+.cta input{flex:1;min-width:0;background:none;border:0;color:var(--fg);font:inherit;padding:16px 0;outline:none;letter-spacing:.05em}
+.cta input::placeholder{color:var(--muted)}
+.cta form button{letter-spacing:.28em;text-transform:uppercase;font-size:11px;color:var(--gold-hi);padding:0 8px}
+.cta .ok{color:var(--gold-hi);font-size:13px;margin-top:10px;min-height:1.4em}
+@media (max-width:760px){.cta{grid-template-columns:1fr}}
+
+footer{border-top:1px solid var(--line);padding:36px clamp(16px,4vw,56px) calc(36px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+footer .logo{font-size:18px;color:var(--fg)}
+footer .note{flex-basis:100%;letter-spacing:.08em;text-transform:none;font-size:12px;color:var(--muted)}
+
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--fg);color:#15100a;padding:12px 20px;border-radius:999px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;opacity:0;transition:.5s var(--ease);z-index:60;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+:focus-visible{outline:1px solid var(--gold-hi);outline-offset:4px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important}}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="logo" href="#top">CASI<span>mir</span></a>
+  <ul>
+    <li><a href="#collection">Collection</a></li>
+    <li><a href="#atelier">Atelier</a></li>
+    <li><a href="#lookbook">Lookbook</a></li>
+    <li><a href="#join">Members</a></li>
+  </ul>
+  <button class="bag" id="bagBtn">Bag · <span id="bagCount">0</span></button>
+</nav>
+
+<header class="hero" id="top">
+  <img src="img/hero.jpg" alt="Man in a black overcoat beside a steel-blue wall" id="heroImg" fetchpriority="high">
+  <div class="hero-copy">
+    <div>
+      <div class="eyebrow">Autumn / Winter 2026</div>
+      <h1>Seen from <em>every</em> side.</h1>
+    </div>
+    <div class="side">
+      <p>Nine pieces for the colder months, each photographed in the round. Drag any one of them to turn it a full 360°.</p>
+      <a class="btn" href="#collection">View the collection <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 12h16M13 5l7 7-7 7"/></svg></a>
+    </div>
+  </div>
+</header>
+
+<section id="collection" class="wrap">
+  <div class="sec-head rv">
+    <div>
+      <div class="eyebrow">The collection</div>
+      <h2>Turn it <em>over.</em></h2>
+    </div>
+    <p>Every tile is a real spin: 24 to 48 photographs of the garment on a turntable. They rotate on their own; drag left or right to take control.</p>
+  </div>
+  <div class="filters rv" id="filters">
+    <button class="on" data-f="all">All</button>
+    <button data-f="outerwear">Outerwear</button>
+    <button data-f="layers">Layers</button>
+    <button data-f="trousers">Trousers</button>
+    <button data-f="footwear">Footwear</button>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<section id="atelier" class="wrap">
+  <div class="feature">
+    <div class="rv" id="featHost"></div>
+    <div class="copy rv">
+      <div class="eyebrow">Atelier · Outerwear</div>
+      <h2>The Kestrel <em>Parka.</em></h2>
+      <div class="quote">“A coat should be the last thing a man thinks about and the first thing a room notices.”</div>
+      <p>Three-layer shell, down-filled, with a storm hood that sits flat when you don't need it. Seam-taped throughout, two-way front zip, hand-warmer pockets lined in brushed cotton.</p>
+      <dl class="specs">
+        <div><dt>Colour</dt><dd id="featColourName">Navy</dd><div class="colour" id="featColour"><button class="on" data-c="navy" style="background:#1b1f2e" aria-label="Navy"></button><button data-c="amber" style="background:#d98a3a" aria-label="Amber"></button><button data-c="grey" style="background:#8a8d93" aria-label="Grey"></button></div></div>
+        <div><dt>Shell</dt><dd>3-layer, 20k/20k waterproof</dd></div>
+        <div><dt>Fill</dt><dd>700-fill traceable down</dd></div>
+        <div><dt>Price</dt><dd>£690</dd></div>
+      </dl>
+      <p style="margin-top:28px"><a class="btn" href="#join">Reserve a number <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 12h16M13 5l7 7-7 7"/></svg></a></p>
+    </div>
+  </div>
+</section>
+
+<section id="lookbook" class="wrap" style="padding-top:0">
+  <div class="look">
+    <div class="rv" id="lookHost"></div>
+    <div class="copy rv">
+      <div class="eyebrow">Lookbook</div>
+      <h2>Worn, in the <em>round.</em></h2>
+      <p>The same turntable, with someone in it. Fit, drape and movement read differently when you can walk around the person wearing the clothes.</p>
+      <div class="steps">
+        <div><b>01</b><span>Drag slowly to study the fall of the fabric from the back.</span></div>
+        <div><b>02</b><span>Flick to spin; the view keeps turning and eases to a stop.</span></div>
+        <div><b>03</b><span>On a phone, swipe sideways inside the frame; the page still scrolls normally.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="join" class="wrap" style="border-top:1px solid var(--line)">
+  <div class="cta">
+    <div class="rv">
+      <div class="eyebrow">Members</div>
+      <h2>First to the <em>cloth.</em></h2>
+      <p style="color:var(--muted);max-width:44ch">Members see each run 72 hours before it goes public and can reserve a number. One letter a month, nothing else.</p>
+    </div>
+    <div class="rv">
+      <form id="joinForm"><input type="email" id="email" placeholder="your@address.com" required aria-label="Email address"><button type="submit">Join</button></form>
+      <div class="ok" id="joinOk"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="logo">CASI<span>mir</span></div>
+  <div>Naples · London · Tokyo</div>
+  <div>© 2026 Casimir</div>
+  <div class="note">Demonstration build. Spin photography is sample material from Sirv's public demo library and the hero photograph is from Unsplash; both are placeholders to be replaced with the client's own product shoots.</div>
+</footer>
+
+<div class="toast" id="toast">Added to bag</div>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- sprite sheets (each file holds every frame of one spin) ---------- */
+const sheets={
+  fleece:    {src:'spins/spin-fleece.jpg',     poster:'spins/spin-fleece-poster.jpg',     cols:5,rows:5,n:24,off:0, bg:'#ffffff'},
+  parkaGrey: {src:'spins/spin-parka-grey.jpg', poster:'spins/spin-parka-grey-poster.jpg', cols:5,rows:5,n:24,off:0, bg:'#ffffff'},
+  parkaNavy: {src:'spins/spin-parka-navy.jpg', poster:'spins/spin-parka-navy-poster.jpg', cols:7,rows:7,n:24,off:0, bg:'#ffffff'},
+  downAmber: {src:'spins/spin-parka-navy.jpg', poster:null,                               cols:7,rows:7,n:24,off:24,bg:'#ffffff'},
+  pullover:  {src:'spins/spin-pullover.jpg',   poster:'spins/spin-pullover-poster.jpg',   cols:5,rows:5,n:24,off:0, bg:'#ffffff'},
+  trouser:   {src:'spins/spin-trouser.jpg',    poster:'spins/spin-trouser-poster.jpg',    cols:5,rows:5,n:24,off:0, bg:'#ffffff'},
+  boot:      {src:'spins/spin-boot.jpg',       poster:'spins/spin-boot-poster.jpg',       cols:6,rows:6,n:36,off:0, bg:'#f1f1f1'},
+  sneaker:   {src:'spins/spin-sneaker.jpg',    poster:'spins/spin-sneaker-poster.jpg',    cols:6,rows:6,n:35,off:0, bg:'#ffffff'},
+  look:      {src:'spins/spin-look.jpg',       poster:'spins/spin-look-poster.jpg',       cols:7,rows:6,n:40,off:0, bg:'#000000',dark:true},
+};
+
+const products=[
+  {name:'Kestrel Parka',fab:'3-layer shell · Navy',price:'£690',cat:'outerwear',tag:'New',sheet:'parkaNavy'},
+  {name:'Kestrel Parka',fab:'3-layer shell · Grey',price:'£690',cat:'outerwear',tag:'',sheet:'parkaGrey'},
+  {name:'Ember Down Coat',fab:'700-fill down · Amber',price:'£540',cat:'outerwear',tag:'1 of 150',sheet:'downAmber'},
+  {name:'Harbour Fleece',fab:'Recycled pile · Black',price:'£320',cat:'layers',tag:'Core',sheet:'fleece'},
+  {name:'Fjord Half-zip',fab:'Merino blend · Indigo',price:'£180',cat:'layers',tag:'',sheet:'pullover'},
+  {name:'Tallis Shell Trouser',fab:'Waterproof twill · Black',price:'£240',cat:'trousers',tag:'Core',sheet:'trouser'},
+  {name:'Sentinel Boot',fab:'Polished leather · Black',price:'£420',cat:'footwear',tag:'Goodyear welt',sheet:'boot'},
+  {name:'Court High',fab:'Leather · Mocha / White',price:'£210',cat:'footwear',tag:'New',sheet:'sneaker'},
+];
+
+/* ---------- spin viewer ---------- */
+const loadedSheets={};
+function loadSheet(src){
+  if(!loadedSheets[src]){loadedSheets[src]=new Promise(res=>{const im=new Image();im.onload=()=>res(true);im.onerror=()=>res(false);im.src=src;});}
+  return loadedSheets[src];
+}
+const spinners=[];
+function makeSpin(host,key,opts){
+  opts=opts||{};const sh=sheets[key];
+  host.classList.add('spin');if(sh.dark)host.classList.add('dark');
+  host.style.setProperty('--spin-bg',sh.bg);
+  const posterStyle=sh.poster?` style="background-image:url('${sh.poster}')"`:'';
+  host.innerHTML=`<div class="fr a"${posterStyle}></div><div class="fr b"${posterStyle}></div>
+    ${opts.tag?`<span class="tag">${opts.tag}</span>`:''}<span class="b360">360°</span>
+    <div class="hud"><span>Drag to rotate</span><span class="deg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg><b>0°</b></span></div>
+    <div class="bar"></div><div class="load">Loading spin</div>`;
+  const frA=host.querySelector('.fr.a'),frB=host.querySelector('.fr.b'),deg=host.querySelector('.deg b'),bar=host.querySelector('.bar');
+  /* f = displayed (eased) frame, target = where the pointer put it; both fractional. Two layers cross-fade between neighbouring frames so the turn reads as continuous. */
+  const s={host,deg,bar,sh,f:opts.start||0,target:opts.start||0,vel:0,auto:sh.n/(opts.secs||5),drag:false,hover:false,visible:false,ready:false,lx:0,lt:0,lastDeg:-1};
+  function setSheet(sh2){s.sh=sh2;s.auto=sh2.n/(opts.secs||5);
+    for(const fr of [frA,frB]){fr.classList.add('sheet');fr.style.backgroundImage=`url('${sh2.src}')`;fr.style.setProperty('--cols',(sh2.cols*100)+'%');fr.style.setProperty('--rows',(sh2.rows*100)+'%');}
+    host.style.setProperty('--spin-bg',sh2.bg);draw();}
+  function pos(i){const idx=i+s.sh.off,c=idx%s.sh.cols,r=Math.floor(idx/s.sh.cols);return `${c/(s.sh.cols-1)*100}% ${r/(s.sh.rows-1)*100}%`;}
+  function draw(){
+    const n=s.sh.n,ff=((s.f%n)+n)%n,i=Math.floor(ff),t=ff-i;
+    /* crisp frame nearly all the time; a short fade only in the last quarter of each step */
+    const mix=t<.72?0:(t-.72)/.28;
+    if(s.ready){frA.style.backgroundPosition=pos(i);frB.style.backgroundPosition=pos((i+1)%n);frB.style.opacity=mix.toFixed(3);}
+    const d=Math.round(ff/n*360);if(d!==s.lastDeg){s.lastDeg=d;deg.textContent=d+'°';bar.style.setProperty('--p',(ff/n*100)+'%');}
+  }
+  s.draw=draw;s.setSheet=setSheet;
+  loadSheet(sh.src).then(ok=>{s.ready=ok;host.classList.add('loaded');if(ok)setSheet(sh);});
+  host.addEventListener('pointerdown',e=>{s.drag=true;s.vel=0;s.target=s.f;s.lx=e.clientX;s.lt=performance.now();host.setPointerCapture(e.pointerId);host.classList.add('grabbing');});
+  host.addEventListener('pointermove',e=>{if(!s.drag)return;const w=host.clientWidth||300,dx=e.clientX-s.lx,now=performance.now(),dt=Math.max(1,now-s.lt);s.lx=e.clientX;s.lt=now;
+    const frames=dx/w*s.sh.n*1.1;s.target-=frames;s.vel=-frames/dt*1000;});
+  const up=()=>{if(!s.drag)return;s.drag=false;host.classList.remove('grabbing');s.vel=Math.max(-s.sh.n*2.5,Math.min(s.sh.n*2.5,s.vel));};
+  host.addEventListener('pointerup',up);host.addEventListener('pointercancel',up);
+  host.addEventListener('pointerenter',()=>{s.hover=true;});host.addEventListener('pointerleave',()=>{s.hover=false;});
+  host.tabIndex=0;host.setAttribute('role','img');host.setAttribute('aria-label',(opts.label||'Product')+', 360 degree view. Drag or use arrow keys to rotate.');
+  host.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){s.vel-=s.sh.n*.6;e.preventDefault();}if(e.key==='ArrowRight'){s.vel+=s.sh.n*.6;e.preventDefault();}});
+  draw();spinners.push(s);vio.observe(host);return s;
+}
+const vio=new IntersectionObserver(es=>es.forEach(e=>{const s=spinners.find(s=>s.host===e.target);if(s)s.visible=e.isIntersecting;}),{rootMargin:'60px'});
+let lastT=performance.now();
+function tick(now){
+  const dt=Math.min(.05,(now-lastT)/1000);lastT=now;
+  for(const s of spinners){
+    if(!s.visible)continue;
+    if(s.drag){
+      /* follow the pointer with a short ease so the turn never jumps */
+      s.f+=(s.target-s.f)*(1-Math.exp(-dt*22));
+    }else{
+      const auto=(reduce||s.hover)?0:s.auto;
+      s.f+=(auto+s.vel)*dt;
+      s.vel*=Math.pow(.05,dt);if(Math.abs(s.vel)<.15)s.vel=0;
+      /* at rest, settle onto a whole frame so the image is always sharp */
+      if(auto===0&&s.vel===0){const r=Math.round(s.f);s.f+=(r-s.f)*(1-Math.exp(-dt*14));if(Math.abs(r-s.f)<.002)s.f=r;}
+      s.target=s.f;
+    }
+    s.draw();
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+/* ---------- grid ---------- */
+const grid=$('#grid');
+products.forEach((p,i)=>{
+  const el=document.createElement('article');el.className='card rv';el.dataset.cat=p.cat;el.style.transitionDelay=((i%4)*.07)+'s';
+  el.innerHTML=`<div class="ph"><div class="sp"></div><button class="quick" type="button">Add to bag</button></div>
+  <div class="meta"><div><h3 class="name">${p.name}</h3><div class="fab">${p.fab}</div></div><div class="price">${p.price}</div></div>
+  <div class="sizes"><span>S</span><span>M</span><span>L</span><span>XL</span><span>XXL</span></div>`;
+  grid.appendChild(el);
+  makeSpin(el.querySelector('.sp'),p.sheet,{tag:p.tag,start:i*5,secs:7+(i%3)*.6,label:p.name});
+  const q=el.querySelector('.quick');q.addEventListener('click',()=>addToBag(p));q.addEventListener('pointerdown',e=>e.stopPropagation());
+});
+
+/* feature: colour switch swaps the sheet in place */
+const feat=makeSpin($('#featHost'),'parkaNavy',{secs:8,label:"Kestrel Parka"});
+const colourSheets={navy:['parkaNavy','Navy'],amber:['downAmber','Amber (Ember Down Coat)'],grey:['parkaGrey','Grey']};
+$('#featColour').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('#featColour button').forEach(x=>x.classList.toggle('on',x===b));
+  const [k,label]=colourSheets[b.dataset.c];$('#featColourName').textContent=label;
+  loadSheet(sheets[k].src).then(ok=>{if(ok){feat.ready=true;feat.setSheet(sheets[k]);feat.vel=40;}});
+});
+makeSpin($('#lookHost'),'look',{secs:9,label:"Full look on a model"});
+
+/* filters */
+$('#filters').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('#filters button').forEach(x=>x.classList.toggle('on',x===b));
+  const f=b.dataset.f;document.querySelectorAll('.card').forEach(c=>{c.classList.toggle('hide',f!=='all'&&c.dataset.cat!==f);});
+});
+
+/* bag */
+let bag=0;const toast=$('#toast');let tt;
+function addToBag(p){bag++;$('#bagCount').textContent=bag;toast.textContent=`${p.name} added to bag`;toast.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove('show'),1800);}
+
+/* reveal */
+const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);}}),{threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
+
+/* scroll */
+const nav=$('#nav'),heroImg=$('#heroImg');let ticking=false;
+function onScroll(){nav.classList.toggle('solid',scrollY>40);if(!reduce)heroImg.style.translate=`0 ${scrollY*.18}px`;ticking=false;}
+addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(onScroll);ticking=true;}},{passive:true});
+
+/* join */
+$('#joinForm').addEventListener('submit',e=>{e.preventDefault();const em=$('#email').value.trim();$('#joinOk').textContent=em?`Welcome. Your first letter goes to ${em}.`:'';$('#email').value='';});
+
+function start(){document.body.classList.add('ready');onScroll();}
+if(heroImg.complete)start();else{heroImg.addEventListener('load',start);setTimeout(start,1500);}
+})();
+</script>
+
+</body>
+</html>
